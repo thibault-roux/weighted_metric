@@ -59,6 +59,7 @@ def evaluator(metric, metricname, dataset, memory=0, certitude=0.7, verbose=True
     egal = 0
 
     all_scores = []
+    real_scores = []
 
     if verbose:
         bar = progressbar.ProgressBar(max_value=len(dataset))
@@ -78,6 +79,7 @@ def evaluator(metric, metricname, dataset, memory=0, certitude=0.7, verbose=True
             scoreA = metric(dataset[i]["reference"], dataset[i]["hypA"], memory=memory)
             scoreB = metric(dataset[i]["reference"], dataset[i]["hypB"], memory=memory)
             all_scores.append((scoreA, scoreB))
+            real_scores.append((nbrA, nbrB))
             if (scoreA < scoreB and nbrA > nbrB) or (scoreB < scoreA and nbrB > nbrA):
                 correct += 1
             elif scoreA == scoreB:
@@ -90,6 +92,9 @@ def evaluator(metric, metricname, dataset, memory=0, certitude=0.7, verbose=True
 
     with open("datasets/scores/" + metricname + ".pickle", "wb") as file:
         pickle.dump(all_scores, file)
+
+    with open("datasets/scores/real.pickle", "wb") as file:
+        pickle.dump(real_scores, file)
 
     print()
     print("correct:", correct)
@@ -120,6 +125,8 @@ if __name__ == '__main__':
     print("Evaluating...")
     evaluator(wer, "wer", dataset, certitude=cert_X)
     # evaluator(wer, "wer", dataset, certitude=cert_Y)
+
+    exit()
 
     print("Evaluated!")
 
