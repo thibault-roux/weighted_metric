@@ -47,7 +47,7 @@ def wer(ref, hyp, memory):
     return jiwer.wer(ref, hyp)
 
 def cer(ref, hyp, memory):
-    return jiwer.wer(ref, hyp)
+    return jiwer.cer(ref, hyp)
 
 
 def evaluator(metric, metricname, dataset, memory=0, certitude=0.7, verbose=True):
@@ -125,6 +125,8 @@ if __name__ == '__main__':
     print("Evaluating...")
     evaluator(wer, "wer", dataset, certitude=cert_X)
     # evaluator(wer, "wer", dataset, certitude=cert_Y)
+
+    evaluator(cer, "cer", dataset, certitude=cert_X)
 
     exit()
 
