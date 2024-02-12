@@ -45,8 +45,8 @@ def train():
     optimized_params = result.x
     minimized_cost = result.fun
 
-    print("Paramètres optimisés:", optimized_params)
-    print("Valeur minimale de la fonction de coût:", minimized_cost)
+    print("Best parameters:", optimized_params)
+    print("Highest score:", -minimized_cost + 100)
 
 
 
