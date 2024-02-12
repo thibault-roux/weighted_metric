@@ -32,25 +32,32 @@ def cost_function(weights_vals):
         if (weighted_scores[0] > weighted_scores[1] and real_pair[0] < real_pair[1]) or (weighted_scores[0] < weighted_scores[1] and real_pair[0] > real_pair[1]):
             winner += 1
     ratio = winner/len(real_scores)*100
-    print("cost_function(" + str(weights_vals) + ") : " + str(ratio))
+    # print("cost_function(" + str(weights_vals) + ") : " + str(ratio))
     return 100 - ratio
 
 
-def train():
-    print("Let's do some training!")
-    weights_vals = np.array([0.0, 0.01, 0.56])
+def train(method, best):
+    x1 = 0.000001
+    x2 = 0.00821922
+    x3 = 0.56
+    std = 0.5
+    weights_vals = np.array([x1 + np.random.normal(x1, std), x2 + np.random.normal(x2, std), x3 + np.random.normal(x3, std)])
     # weights_vals initialised randomly
     # weights_vals = 
 
     # Minimize the cost function
-    result = minimize(cost_function, weights_vals, method='L-BFGS-B')
+    result = minimize(cost_function, weights_vals, method=method)
 
     # Print results
     optimized_params = result.x
     minimized_cost = result.fun
 
-    print("Best parameters:", optimized_params)
-    print("Highest score:", -minimized_cost + 100)
+    # print("Best parameters:", optimized_params)
+    # print("Highest score:", -minimized_cost + 100)
+
+    newbest = -minimized_cost + 100
+    parameters = optimized_params
+    return newbest, parameters
 
 
 
@@ -83,7 +90,17 @@ if __name__ == '__main__':
 
 
     methods = ["Nelder-Mead", "Powell", "CG", "BFGS", "Newton-CG", "L-BFGS-B", "TNC", "COBYLA", "SLSQP", "trust-const", "dogleg", "trust-ncg", "trust-exact", "trust-krylov"]
-    for method in methods:
-        print(method)
-        train(method)
-        print("\n-----\n")
+    removes = ["Newton-CG", "trust-const", "dogleg", "trust-ncg", "trust-exact", "trust-krylov"]
+    for remove in removes:
+        methods.remove(remove)
+
+    best = 0
+    while True:
+        for method in methods:
+            newbest, parameters = train(method, best)
+            if newbest > best:
+                print(method)
+                print(newbest)
+                print(parameters)
+                best = newbest
+                print("\n-----\n")
