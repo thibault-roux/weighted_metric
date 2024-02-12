@@ -32,14 +32,18 @@ def cost_function(weights_vals):
         if (weighted_scores[0] > weighted_scores[1] and real_pair[0] < real_pair[1]) or (weighted_scores[0] < weighted_scores[1] and real_pair[0] > real_pair[1]):
             winner += 1
     ratio = winner/len(real_scores)*100
+    print("cost_function(" + str(weights_vals) + ") : " + str(ratio))
     return 100 - ratio
 
 
 def train():
-    weights_vals = np.array([0.0, 0.0, 0.0])
+    print("Let's do some training!")
+    weights_vals = np.array([0.0, 0.01, 0.56])
+    # weights_vals initialised randomly
+    # weights_vals = 
 
     # Minimize the cost function
-    result = minimize(cost_function, initial_params, method='L-BFGS-B')
+    result = minimize(cost_function, weights_vals, method='L-BFGS-B')
 
     # Print results
     optimized_params = result.x
@@ -60,9 +64,9 @@ if __name__ == '__main__':
         all_scores[metricname] = read_pickle(metricname)
     real_scores = read_pickle("real")
 
-    print(len(all_scores["wer"]))
-    print(len(all_scores["semdist"]))
-    print(len(real_scores))
+    # print(len(all_scores["wer"]))
+    # print(len(all_scores["semdist"]))
+    # print(len(real_scores))
 
     winner = dict()
     for metricname in metricnames:
@@ -78,7 +82,8 @@ if __name__ == '__main__':
         print(metricname, winner[metricname]/len(real_scores)*100) 
 
 
-    best = 0
-    weight2score = dict()
-    # given x weights in a 0 to N interval
-    
+    methods = ["Nelder-Mead", "Powell", "CG", "BFGS", "Newton-CG", "L-BFGS-B", "TNC", "COBYLA", "SLSQP", "trust-const", "dogleg", "trust-ncg", "trust-exact", "trust-krylov"]
+    for method in methods:
+        print(method)
+        train(method)
+        print("\n-----\n")
