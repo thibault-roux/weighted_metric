@@ -25,7 +25,6 @@ def semdist(ref, hyp, memory):
     model, dicosave = memory
     try:
         tempdico = dicosave[ref]
-        print(tempdico)
         try:
             score = tempdico[hyp] # i.e. dicosave[ref][hyp]
             return score

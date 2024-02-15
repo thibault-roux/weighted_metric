@@ -22,8 +22,8 @@ def cost_function(weights_vals):
         weights[metricnames[i]] = weights_vals[i]
     # weighted scores
     winner = 0
-    for i in range(len(real_scores)):
-        real_pair = real_scores[i]
+    for i in range(len(train_real_scores)):
+        real_pair = train_real_scores[i]
         weighted_scores = [0, 0]
         for metricname in metricnames:
             scores_pair = all_scores[metricname][i]
@@ -31,9 +31,30 @@ def cost_function(weights_vals):
             weighted_scores[1] += scores_pair[1]*weights[metricname]
         if (weighted_scores[0] > weighted_scores[1] and real_pair[0] < real_pair[1]) or (weighted_scores[0] < weighted_scores[1] and real_pair[0] > real_pair[1]):
             winner += 1
-    ratio = winner/len(real_scores)*100
+    ratio = winner/len(train_real_scores)*100
     # print("cost_function(" + str(weights_vals) + ") : " + str(ratio))
     return 100 - ratio
+
+
+def test_function(weights_vals):
+    # weights_vals = [0.3213, 0.014423, 0.99999] # example of weights
+    weights = dict()
+    for i in range(len(metricnames)):
+        weights[metricnames[i]] = weights_vals[i]
+    # weighted scores
+    winner = 0
+    for i in range(len(val_real_scores)):
+        real_pair = val_real_scores[i]
+        weighted_scores = [0, 0]
+        for metricname in metricnames:
+            scores_pair = all_scores[metricname][i]
+            weighted_scores[0] += scores_pair[0]*weights[metricname]
+            weighted_scores[1] += scores_pair[1]*weights[metricname]
+        if (weighted_scores[0] > weighted_scores[1] and real_pair[0] < real_pair[1]) or (weighted_scores[0] < weighted_scores[1] and real_pair[0] > real_pair[1]):
+            winner += 1
+    ratio = winner/len(val_real_scores)*100
+    # print("cost_function(" + str(weights_vals) + ") : " + str(ratio))
+    return ratio
 
 
 def train(method, best):
@@ -82,7 +103,12 @@ if __name__ == '__main__':
     all_scores = dict()
     for metricname in metricnames:
         all_scores[metricname] = read_pickle(metricname)
-    real_scores = read_pickle("real")
+    real_scores = read_pickle("real_Y")
+
+    # split real_scores in two sets (train and val)
+    train_real_scores = real_scores[:int(len(real_scores)*0.5)]
+    test_val_scores = real_scores[int(len(real_scores)*0.5):]
+
 
     # print(len(all_scores["wer"]))
     # print(len(all_scores["semdist"]))
@@ -114,8 +140,10 @@ if __name__ == '__main__':
             newbest, parameters = train(method, best)
             if newbest > best or (newbest == best and negative_sum(parameters) < negative_sum(best_parameters)):
                 print(method)
-                print(newbest)
-                print(parameters)
+                print("newbest:", newbest)
+                print("parameters:", parameters)
+                test_score = test_function(parameters)
+                print("test_score:", test_score)
                 best = newbest
                 best_parameters = parameters
                 print("\n-----\n")
