@@ -58,19 +58,13 @@ def test_function(weights_vals):
 
 
 def train(method, best):
-    # x1 = 0.000001
-    # x2 = 0.00101608
-    # x3 = 0.06685642
-    x1 = 0.5
-    x2 = 0.5
-    x3 = 0.5
-    x4 = 0.5
-    # 95.14824797843666
-    # [-0.09363871  0.01798104  0.90433826  2.9213723 ]
-    std = 0.5
-    # weights_vals = np.array([x1 + np.random.normal(x1, std), x2 + np.random.normal(x2, std), x3 + np.random.normal(x3, std), x4 + np.random.normal(x4, std)])
-    # weights_vals initialised randomly
-    weights_vals = np.random.uniform(0, 1, 4)
+    # ["wer_Y", "semdist_Y", "cer_Y", "phoner_Y"]
+    # semdist: 77.777, train: 83.171, test: 84.597
+    # [0.7, 0.05, 5, 5]
+
+    # semdist weight is small because [0, 100] instead of [0, 1]
+
+    weights_vals = np.random.uniform(0, 1, len(metricnames))
 
     # Minimize the cost function
     result = minimize(cost_function, weights_vals, method=method)
@@ -115,6 +109,10 @@ if __name__ == '__main__':
     for metricname in metricnames:
         train_all_scores[metricname] = all_scores[metricname][:splitter]
         test_all_scores[metricname] = all_scores[metricname][splitter:]
+
+    # inverse train and test
+    train_real_scores, test_real_scores = test_real_scores, train_real_scores
+    train_all_scores, test_all_scores = test_all_scores, train_all_scores
 
 
     # Compute score for all metrics ----------------
