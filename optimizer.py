@@ -26,7 +26,7 @@ def cost_function(weights_vals):
         real_pair = train_real_scores[i]
         weighted_scores = [0, 0]
         for metricname in metricnames:
-            scores_pair = all_scores[metricname][i]
+            scores_pair = train_all_scores[metricname][i]
             weighted_scores[0] += scores_pair[0]*weights[metricname]
             weighted_scores[1] += scores_pair[1]*weights[metricname]
         if (weighted_scores[0] > weighted_scores[1] and real_pair[0] < real_pair[1]) or (weighted_scores[0] < weighted_scores[1] and real_pair[0] > real_pair[1]):
@@ -43,16 +43,16 @@ def test_function(weights_vals):
         weights[metricnames[i]] = weights_vals[i]
     # weighted scores
     winner = 0
-    for i in range(len(val_real_scores)):
-        real_pair = val_real_scores[i]
+    for i in range(len(test_real_scores)):
+        real_pair = test_real_scores[i]
         weighted_scores = [0, 0]
         for metricname in metricnames:
-            scores_pair = all_scores[metricname][i]
+            scores_pair = test_all_scores[metricname][i]
             weighted_scores[0] += scores_pair[0]*weights[metricname]
             weighted_scores[1] += scores_pair[1]*weights[metricname]
         if (weighted_scores[0] > weighted_scores[1] and real_pair[0] < real_pair[1]) or (weighted_scores[0] < weighted_scores[1] and real_pair[0] > real_pair[1]):
             winner += 1
-    ratio = winner/len(val_real_scores)*100
+    ratio = winner/len(test_real_scores)*100
     # print("cost_function(" + str(weights_vals) + ") : " + str(ratio))
     return ratio
 
@@ -68,9 +68,9 @@ def train(method, best):
     # 95.14824797843666
     # [-0.09363871  0.01798104  0.90433826  2.9213723 ]
     std = 0.5
-    weights_vals = np.array([x1 + np.random.normal(x1, std), x2 + np.random.normal(x2, std), x3 + np.random.normal(x3, std), x4 + np.random.normal(x4, std)])
+    # weights_vals = np.array([x1 + np.random.normal(x1, std), x2 + np.random.normal(x2, std), x3 + np.random.normal(x3, std), x4 + np.random.normal(x4, std)])
     # weights_vals initialised randomly
-    # weights_vals = 
+    weights_vals = np.random.uniform(0, 1, 4)
 
     # Minimize the cost function
     result = minimize(cost_function, weights_vals, method=method)
@@ -98,22 +98,27 @@ def negative_sum(X):
 
 # main
 if __name__ == '__main__':
-    metricnames = ["wer", "semdist", "cer", "phoner"]
+    metricnames = ["wer_Y", "semdist_Y", "cer_Y", "phoner_Y"]
 
     all_scores = dict()
     for metricname in metricnames:
         all_scores[metricname] = read_pickle(metricname)
     real_scores = read_pickle("real_Y")
 
-    # split real_scores in two sets (train and val)
-    train_real_scores = real_scores[:int(len(real_scores)*0.5)]
-    test_val_scores = real_scores[int(len(real_scores)*0.5):]
+    # split in train and val sets ----------------
+    splitter = int(len(real_scores)*0.5)
+
+    train_real_scores = real_scores[:splitter]
+    test_real_scores = real_scores[splitter:]
+    train_all_scores = dict()
+    test_all_scores = dict()
+    for metricname in metricnames:
+        train_all_scores[metricname] = all_scores[metricname][:splitter]
+        test_all_scores[metricname] = all_scores[metricname][splitter:]
 
 
-    # print(len(all_scores["wer"]))
-    # print(len(all_scores["semdist"]))
-    # print(len(real_scores))
-
+    # Compute score for all metrics ----------------
+    real_scores = real_scores
     winner = dict()
     for metricname in metricnames:
         winner[metricname] = 0
@@ -125,7 +130,8 @@ if __name__ == '__main__':
             if (scores_pair[0] > scores_pair[1] and real_pair[0] < real_pair[1]) or (scores_pair[0] < scores_pair[1] and real_pair[0] > real_pair[1]):
                 winner[metricname] += 1
     for metricname in metricnames:
-        print(metricname, winner[metricname]/len(real_scores)*100) 
+        print(metricname, winner[metricname]/len(real_scores)*100)
+
 
 
     methods = ["Nelder-Mead", "Powell", "CG", "BFGS", "Newton-CG", "L-BFGS-B", "TNC", "COBYLA", "SLSQP", "trust-const", "dogleg", "trust-ncg", "trust-exact", "trust-krylov"]
