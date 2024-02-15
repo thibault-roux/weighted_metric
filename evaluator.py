@@ -49,6 +49,12 @@ def wer(ref, hyp, memory):
 def cer(ref, hyp, memory):
     return jiwer.cer(ref, hyp)
 
+def phoner(ref, hyp, memory):
+    ep = memory
+    ref_phon = ep.transliterate(ref)
+    hyp_phon = ep.transliterate(hyp)
+    return cer(ref_phon, hyp_phon)
+
 
 def evaluator(metric, metricname, dataset, memory=0, certitude=0.7, verbose=True):
     print("certitude: ", certitude*100)
@@ -114,21 +120,31 @@ def write(namefile, x, y):
         file.write(namefile + "," + str(x) + "," + str(y) + "\n")
 
 
-
 if __name__ == '__main__':
     print("Reading dataset...")
     dataset = read_dataset("hats.txt")
 
     cert_X = 1
     cert_Y = 0.7
+
+
+    # phoner
+    from jiwer import cer
+    lang_code = 'fra-Latn-p'
+    memory = epitran.Epitran(lang_code)
+    evaluator(phoner, dataset, memory=memory, certitude=cert_X)
     
+
+    exit()
+    
+
+
     print("Evaluating...")
     evaluator(wer, "wer", dataset, certitude=cert_X)
     # evaluator(wer, "wer", dataset, certitude=cert_Y)
 
     evaluator(cer, "cer", dataset, certitude=cert_X)
 
-    exit()
 
     print("Evaluated!")
 
