@@ -53,7 +53,7 @@ def phoner(ref, hyp, memory):
     ep = memory
     ref_phon = ep.transliterate(ref)
     hyp_phon = ep.transliterate(hyp)
-    return cer(ref_phon, hyp_phon)
+    return jiwer.cer(ref_phon, hyp_phon)
 
 
 def evaluator(metric, metricname, dataset, memory=0, certitude=0.7, verbose=True):
@@ -130,7 +130,6 @@ if __name__ == '__main__':
 
     # phoner
     import epitran
-    from jiwer import cer
     lang_code = 'fra-Latn-p'
     memory = epitran.Epitran(lang_code)
     evaluator(phoner, "phoner_Y", dataset, memory=memory, certitude=cert_Y)
