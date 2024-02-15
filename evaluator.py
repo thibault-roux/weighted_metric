@@ -133,18 +133,15 @@ if __name__ == '__main__':
     from jiwer import cer
     lang_code = 'fra-Latn-p'
     memory = epitran.Epitran(lang_code)
-    evaluator(phoner, dataset, memory=memory, certitude=cert_X)
-    
-
-    exit()
+    evaluator(phoner, "phoner_Y", dataset, memory=memory, certitude=cert_Y)
     
 
 
     print("Evaluating...")
-    evaluator(wer, "wer", dataset, certitude=cert_X)
-    # evaluator(wer, "wer", dataset, certitude=cert_Y)
+    evaluator(wer, "wer_Y", dataset, memory=0, certitude=cert_Y)
+    # evaluator(wer, "wer", dataset, memory=0, certitude=cert_Y)
 
-    evaluator(cer, "cer", dataset, certitude=cert_X)
+    evaluator(cer, "cer_Y", dataset, memory=0, certitude=cert_Y)
 
 
     print("Evaluated!")
@@ -161,8 +158,4 @@ if __name__ == '__main__':
     except FileNotFoundError:
         dicosave = dict()
     memory=(model, dicosave)
-    evaluator(semdist, "semdist", dataset, memory=memory, certitude=cert_X)
-    # evaluator(semdist, dataset, memory=memory, certitude=cert_Y)
-    # write pickle dicosave
-    with open("datasets/pickle/semdist.pickle", "wb") as file:
-        pickle.dump(dicosave, file)
+    evaluator(semdist, "semdist_Y", dataset, memory=memory, certitude=cert_Y)

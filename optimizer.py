@@ -37,11 +37,17 @@ def cost_function(weights_vals):
 
 
 def train(method, best):
-    x1 = 0.000001
-    x2 = 0.00821922
-    x3 = 0.56
+    # x1 = 0.000001
+    # x2 = 0.00101608
+    # x3 = 0.06685642
+    x1 = 0.5
+    x2 = 0.5
+    x3 = 0.5
+    x4 = 0.5
+    # 95.14824797843666
+    # [-0.09363871  0.01798104  0.90433826  2.9213723 ]
     std = 0.5
-    weights_vals = np.array([x1 + np.random.normal(x1, std), x2 + np.random.normal(x2, std), x3 + np.random.normal(x3, std)])
+    weights_vals = np.array([x1 + np.random.normal(x1, std), x2 + np.random.normal(x2, std), x3 + np.random.normal(x3, std), x4 + np.random.normal(x4, std)])
     # weights_vals initialised randomly
     # weights_vals = 
 
@@ -61,10 +67,17 @@ def train(method, best):
 
 
 
+def negative_sum(X):
+    negsum = 0
+    for x in X:
+        if x < 0:
+            negsum -= x
+    return negsum
+
 
 # main
 if __name__ == '__main__':
-    metricnames = ["wer", "semdist", "cer"]
+    metricnames = ["wer", "semdist", "cer", "phoner"]
 
     all_scores = dict()
     for metricname in metricnames:
@@ -95,12 +108,14 @@ if __name__ == '__main__':
         methods.remove(remove)
 
     best = 0
+    best_parameters = (0, 0, 0)
     while True:
         for method in methods:
             newbest, parameters = train(method, best)
-            if newbest > best:
+            if newbest > best or (newbest == best and negative_sum(parameters) < negative_sum(best_parameters)):
                 print(method)
                 print(newbest)
                 print(parameters)
                 best = newbest
+                best_parameters = parameters
                 print("\n-----\n")
