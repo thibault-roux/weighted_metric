@@ -129,6 +129,7 @@ if __name__ == '__main__':
 
 
     # phoner
+    import epitran
     from jiwer import cer
     lang_code = 'fra-Latn-p'
     memory = epitran.Epitran(lang_code)
