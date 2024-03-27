@@ -42,17 +42,20 @@ if __name__ == '__main__':
     dataset = read_hats()
 
     with open("scores.txt", "w", encoding="utf8") as file:
-        txt = ""
+        txt = "reference,hypothesis,"
         for metricname in metricnames:
             txt += metricname + ","
         txt = txt[:-1] + "\n"
         i = 0
         for item in dataset:
+            txt += item["reference"] + "," + item["hypA"] + ","
             for metricname in metricnames:
-                txt += item["reference"] + "," + item["hypA"] + "," + str(ALL_scores[metricname][i][0]) + ","
+                txt += str(ALL_scores[metricname][i][0]) + ","
             txt = txt[:-1] + "\n"
+
+            txt += item["reference"] + "," + item["hypB"] + ","
             for metricname in metricnames:
-                txt += item["reference"] + "," + item["hypB"] + "," + str(ALL_scores[metricname][i][1]) + ","
+                txt += str(ALL_scores[metricname][i][1]) + ","
             txt = txt[:-1] + "\n"
             i += 1
         file.write(txt)
