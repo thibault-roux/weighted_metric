@@ -54,5 +54,6 @@ if __name__ == '__main__':
             for metricname in metricnames:
                 txt += str(ALL_scores[metricname][i][1]) + ","
             txt = txt[:-1] + "\n"
+            i += 1
         file.write(txt)
     print("Done")
