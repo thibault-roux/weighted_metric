@@ -32,19 +32,26 @@ def read_pickle(metricname):
 
 
 
-
-
-
-
-
-
 # main
 if __name__ == '__main__':
-    metricnames = ["wer", "semdist", "cer"]
+    metricnames = ["wer", "cer", "phoner", "semdist"]
+    ALL_scores = dict()
     for metricname in metricnames:
-        metric = read_pickle(metricname + "_Y")
-        print(type(metric))
-        print(len(metric))
+        ALL_scores[metricname] = read_pickle(metricname + "_Y")
 
     dataset = read_hats()
-    print(len(dataset))
+
+    with open("scores.txt", "w", encoding="utf8") as file:
+        txt = ""
+        for metricname in metricnames:
+            txt += metricname + ","
+        txt = txt[:-1] + "\n"
+        for item in dataset:
+            for metricname in metricnames:
+                txt += str(ALL_scores[metricname][item["reference"]][item["hypA"]]) + ","
+            txt = txt[:-1] + "\n"
+            for metricname in metricnames:
+                txt += str(ALL_scores[metricname][item["reference"]][item["hypB"]]) + ","
+            txt = txt[:-1] + "\n"
+        file.write(txt)
+    print("Done")
