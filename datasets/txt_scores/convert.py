@@ -2,7 +2,7 @@ import pickle
 
 
 
-def read_hats():
+def read_hats(certitude=0.7):
     # dataset = [{"reference": ref, "hypA": hypA, "nbrA": nbrA, "hypB": hypB, "nbrB": nbrB}, ...]
     dataset = []
     with open("../hats.txt", "r", encoding="utf8") as file:
@@ -15,7 +15,12 @@ def read_hats():
             dictionary["nbrA"] = int(line[2])
             dictionary["hypB"] = line[3]
             dictionary["nbrB"] = int(line[4])
-            if dictionary["nbrA"] != dictionary["nbrB"]:
+
+            nbrA = dictionary["nbrA"]
+            nbrB = dictionary["nbrB"]
+            maximum = max(nbrA, nbrB)
+            c = maximum/(nbrA+nbrB)
+            if c >= certitude:
                 dataset.append(dictionary)
     return dataset
 
