@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
     dataset = read_hats()
 
-    with open("scores.txt", "w", encoding="utf8") as file:
+    with open("scores.csv", "w", encoding="utf8") as file:
         txt = "reference,hypothesis,"
         for metricname in metricnames:
             txt += metricname + ","
