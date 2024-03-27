@@ -46,12 +46,13 @@ if __name__ == '__main__':
         for metricname in metricnames:
             txt += metricname + ","
         txt = txt[:-1] + "\n"
+        i = 0
         for item in dataset:
             for metricname in metricnames:
-                txt += str(ALL_scores[metricname][item["reference"]][item["hypA"]]) + ","
+                txt += str(ALL_scores[metricname][i][0]) + ","
             txt = txt[:-1] + "\n"
             for metricname in metricnames:
-                txt += str(ALL_scores[metricname][item["reference"]][item["hypB"]]) + ","
+                txt += str(ALL_scores[metricname][i][1]) + ","
             txt = txt[:-1] + "\n"
         file.write(txt)
     print("Done")
