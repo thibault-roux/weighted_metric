@@ -22,7 +22,7 @@ def agree(score1, score2):
 
 def agreement_if_wrong(scores_wrong, scores, real):
     if len(scores_wrong) != len(scores) or len(scores) != len(real):
-        raise ValueError("Lengths of scores_wrong, scores and real should be equal"
+        raise ValueError("Lengths of scores_wrong, scores and real should be equal")
 
     agree_wrong = 0
     disagree_wrong = 0
@@ -48,6 +48,6 @@ if __name__ == '__main__':
 
     metric_compared = "semdist"
     for metricname in metricnames:
-        if metricname != metric_compared:
+        if metricname == metric_compared:
             continue
-        print(f"Agreement if {metric_compared} is wrong: {agreement_if_wrong(all_scores[metric_compared], all_scores[metricname], real_scores)}")
+        print(f"Agreement for {metricname} if {metric_compared} is wrong: {agreement_if_wrong(all_scores[metric_compared], all_scores[metricname], real_scores)}")
