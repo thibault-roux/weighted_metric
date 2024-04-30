@@ -46,8 +46,22 @@ if __name__ == '__main__':
     for i in range(len(real_scores)):
         real_scores[i] = (-real_scores[i][0], -real_scores[i][1])
 
-    metric_compared = "semdist"
+    txt = ","
     for metricname in metricnames:
-        if metricname == metric_compared:
-            continue
-        print(f"Agreement for {metricname} if {metric_compared} is wrong: {agreement_if_wrong(all_scores[metric_compared], all_scores[metricname], real_scores)}")
+        txt += metricname + ","
+    txt = txt[:-1] + "\n"
+
+    # metric_compared = "semdist"
+    for metric_compared in metricnames:
+        txt += metric_compared + ","
+        for metricname in metricnames:
+            # if metricname == metric_compared:
+            #     continue
+            agreement = agreement_if_wrong(all_scores[metricname], all_scores[metric_compared], real_scores)
+            print(f"Agreement for {metricname} if {metric_compared} is wrong: {agreement}")
+            txt += str(agreement) + ","
+        print("---")
+        txt = txt[:-1] + "\n"
+
+    with open("results/agreements_if_wrong.txt", "w", encoding="utf8") as file:
+        file.write(txt)
